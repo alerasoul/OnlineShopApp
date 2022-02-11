@@ -3,6 +3,7 @@ package com.example.onlineshopapp.module
 import com.example.onlineshopapp.api.customer.UserApi
 import com.example.onlineshopapp.api.invoice.InvoiceApi
 import com.example.onlineshopapp.api.invoice.TransactionApi
+import com.example.onlineshopapp.api.product.ColorApi
 import com.example.onlineshopapp.api.product.ProductApi
 import com.example.onlineshopapp.api.product.ProductCategoryApi
 import com.example.onlineshopapp.api.site.BlogApi
@@ -31,7 +32,6 @@ object ApiModule {
             .client(UnsafeSSLConfig.unsafeOkHttpClient.build())
             .build()
     }
-
 
     @Provides
     @Singleton
@@ -69,13 +69,11 @@ object ApiModule {
         return provideApi().create(InvoiceApi::class.java)
     }
 
-
     @Provides
     @Singleton
     fun provideTransactionApi(): TransactionApi {
         return provideApi().create(TransactionApi::class.java)
     }
-
 
     @Provides
     @Singleton
@@ -83,5 +81,10 @@ object ApiModule {
         return provideApi().create(UserApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideColorApi(): ColorApi {
+        return provideApi().create(ColorApi::class.java)
+    }
 
 }

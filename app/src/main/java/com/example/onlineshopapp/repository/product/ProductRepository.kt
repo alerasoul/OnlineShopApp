@@ -3,8 +3,10 @@ package com.example.onlineshopapp.repository.product
 import com.example.onlineshopapp.api.product.ProductApi
 import com.example.onlineshopapp.model.ServiceResponse
 import com.example.onlineshopapp.model.product.Product
+import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
+@ActivityScoped
 class ProductRepository @Inject constructor(private val api: ProductApi) {
 
     suspend fun getProducts(): ServiceResponse<Product> {

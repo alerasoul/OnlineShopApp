@@ -3,8 +3,10 @@ package com.example.onlineshopapp.repository.site
 import com.example.onlineshopapp.api.site.SliderApi
 import com.example.onlineshopapp.model.ServiceResponse
 import com.example.onlineshopapp.model.site.Slider
+import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
+@ActivityScoped
 class SliderRepository @Inject constructor(private val api: SliderApi) {
 
     suspend fun getSliders(): ServiceResponse<Slider> {

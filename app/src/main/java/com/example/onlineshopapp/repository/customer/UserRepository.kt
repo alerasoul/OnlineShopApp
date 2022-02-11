@@ -5,11 +5,13 @@ import com.example.onlineshopapp.model.ServiceResponse
 import com.example.onlineshopapp.model.customer.User
 import com.example.onlineshopapp.model.customer.UserVM
 import com.example.onlineshopapp.repository.base.BaseRepository
+import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
+@ActivityScoped
 class UserRepository @Inject constructor(private val api: UserApi) : BaseRepository() {
 
-    suspend fun getById(token: String): ServiceResponse<User> {
+    suspend fun getUser(token: String): ServiceResponse<User> {
         return try {
             api.getUser(prepareToken(token))
         } catch (e: Exception) {

@@ -4,8 +4,10 @@ import com.example.onlineshopapp.api.invoice.InvoiceApi
 import com.example.onlineshopapp.model.ServiceResponse
 import com.example.onlineshopapp.model.invoice.Invoice
 import com.example.onlineshopapp.repository.base.BaseRepository
+import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
+@ActivityScoped
 class InvoiceRepository @Inject constructor(private val api: InvoiceApi) : BaseRepository() {
 
     suspend fun getInvoiceById(id: Int, token: String): ServiceResponse<Invoice> {
