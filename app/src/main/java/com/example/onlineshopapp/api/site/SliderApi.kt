@@ -9,7 +9,7 @@ import retrofit2.http.Path
 interface SliderApi {
 
     @GET("slider")
-    suspend fun getSliders(): ServiceResponse<Slider>
+    suspend fun getSliders(): ServiceResponse<List<Slider>>
 
     @GET("slider/{id}")
     suspend fun getSliderById(@Path("id") id: Int): ServiceResponse<Slider>

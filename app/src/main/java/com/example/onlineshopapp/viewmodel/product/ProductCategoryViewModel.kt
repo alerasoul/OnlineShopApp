@@ -1,5 +1,6 @@
 package com.example.onlineshopapp.viewmodel.product
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.onlineshopapp.model.ServiceResponse
@@ -10,17 +11,32 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductCategoryCategoryViewModel @Inject constructor(private var repository: ProductCategoryRepository) :
+class ProductCategoryViewModel @Inject constructor(private var repository: ProductCategoryRepository) :
     ViewModel() {
 
-    fun getProductCategories(onResponse: (response: ServiceResponse<ProductCategory>) -> Unit) {
+    var dataList = mutableStateOf<List<ProductCategory>>(listOf())
+    var isLoading = mutableStateOf(true)
+
+    init {
+        getProductCategories { response ->
+            isLoading.value = false
+            if (response.status == "OK") {
+                dataList.value = response.data!!
+            }
+        }
+    }
+
+    fun getProductCategories(onResponse: (response: ServiceResponse<List<ProductCategory>>) -> Unit) {
         viewModelScope.launch {
             var response = repository.getProductCategories()
             onResponse(response)
         }
     }
 
-    fun getProductCategoryById(id: Int, onResponse: (response: ServiceResponse<ProductCategory>) -> Unit) {
+    fun getProductCategoryById(
+        id: Int,
+        onResponse: (response: ServiceResponse<ProductCategory>) -> Unit,
+    ) {
         viewModelScope.launch {
             var response = repository.getProductCategoryById(id)
             onResponse(response)

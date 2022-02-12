@@ -88,7 +88,10 @@ dependencies {
     implementation "androidx.room:room-ktx:2.3.0"
     kapt "androidx.room:room-compiler:2.4.1"
 
+    //Glide
+    implementation "com.github.skydoves:landscapist-glide:1.4.5"
+
 }
 kapt {
-    correctErrorTypes=true
+    correctErrorTypes = true
 }

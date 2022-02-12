@@ -5,20 +5,24 @@ import com.example.onlineshopapp.model.product.Product
 import com.example.onlineshopapp.model.product.ProductColor
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface ProductApi {
 
     @GET("product")
-    suspend fun getProducts(): ServiceResponse<Product>
+    suspend fun getProducts(
+        @Query("pageIndex") pageIndex: Int,
+        @Query("pageSize") pageSize: Int,
+    ): ServiceResponse<List<Product>>
 
     @GET("product/{id}")
     suspend fun getProductById(@Path("pageIndex") pageIndex: Int): ServiceResponse<Product>
 
     @GET("product/new")
-    suspend fun getNewProducts(): ServiceResponse<Product>
+    suspend fun getNewProducts(): ServiceResponse<List<Product>>
 
     @GET("product/popular")
-    suspend fun getPopularProducts(): ServiceResponse<Product>
+    suspend fun getPopularProducts(): ServiceResponse<List<Product>>
 
 }

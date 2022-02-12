@@ -9,15 +9,15 @@ import javax.inject.Inject
 @ActivityScoped
 class ProductRepository @Inject constructor(private val api: ProductApi) {
 
-    suspend fun getProducts(): ServiceResponse<Product> {
+    suspend fun getProducts(pageIndex: Int, pageSize: Int): ServiceResponse<List<Product>> {
         return try {
-            api.getProducts()
+            api.getProducts(pageIndex, pageSize)
         } catch (e: Exception) {
             ServiceResponse(status = "EXCEPTION", message = e.message)
         }
     }
 
-    suspend fun getNewProducts(): ServiceResponse<Product> {
+    suspend fun getNewProducts(): ServiceResponse<List<Product>> {
         return try {
             api.getNewProducts()
         } catch (e: Exception) {
@@ -25,7 +25,7 @@ class ProductRepository @Inject constructor(private val api: ProductApi) {
         }
     }
 
-    suspend fun getPopularProducts(): ServiceResponse<Product> {
+    suspend fun getPopularProducts(): ServiceResponse<List<Product>> {
         return try {
             api.getPopularProducts()
         } catch (e: Exception) {

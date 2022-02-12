@@ -9,7 +9,7 @@ import javax.inject.Inject
 @ActivityScoped
 class ProductCategoryRepository @Inject constructor(private val api: ProductCategoryApi) {
 
-    suspend fun getProductCategories(): ServiceResponse<ProductCategory> {
+    suspend fun getProductCategories(): ServiceResponse<List<ProductCategory>> {
         return try {
             api.getProductCategories()
         } catch (e: Exception) {

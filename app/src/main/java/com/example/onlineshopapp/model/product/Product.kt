@@ -3,7 +3,7 @@ package com.example.onlineshopapp.model.product
 data class Product(
     var addDate: String?,
     var category: ProductCategory?,
-    var colors: ProductColor?,
+    var colors: List<ProductColor>?,
     var description: String?,
     var id: Int?,
     var image: String?,
