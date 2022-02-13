@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.onlineshopapp.ui.component.TopAppView
+import com.example.onlineshopapp.util.ThisApp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -25,6 +26,21 @@ fun MainScreen() {
             composable("home") {
                 fullScreen = false
                 HomeScreen(navController)
+            }
+            composable("product/{categoryId}/{categoryTitle}",
+                arguments = listOf(
+                    navArgument("categoryId") { type = NavType.IntType },
+                    navArgument("categoryTitle") { type = NavType.StringType }
+                )
+            ) { backStack ->
+                fullScreen = false
+                val categoryId = backStack.arguments?.getInt("categoryId")
+                val categoryTitle = backStack.arguments?.getString("categoryTitle")
+                ThisApp.categoryId = categoryId!!
+                ProductScreen(categoryId = categoryId!!,
+                    categoryTitle = categoryTitle!!,
+                    navController = navController)
+
             }
             composable("showProduct/{productId}",
                 arguments = listOf(

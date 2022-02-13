@@ -17,6 +17,18 @@ class ProductRepository @Inject constructor(private val api: ProductApi) {
         }
     }
 
+    suspend fun getAllByCategoryId(
+        categoryId: Int,
+        pageIndex: Int,
+        pageSize: Int,
+    ): ServiceResponse<Product> {
+        return try {
+            api.getAllByCategoryId(categoryId, pageIndex, pageSize)
+        } catch (e: Exception) {
+            ServiceResponse(status = "EXCEPTION", message = e.message)
+        }
+    }
+
     suspend fun getNewProducts(): ServiceResponse<Product> {
         return try {
             api.getNewProducts()

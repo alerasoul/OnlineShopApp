@@ -13,19 +13,17 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.onlineshopapp.ui.component.Loading
+import com.example.onlineshopapp.ui.component.LoadingInColumn
+import com.example.onlineshopapp.ui.component.LoadingInRow
 import com.example.onlineshopapp.viewmodel.product.ProductViewModel
 import com.skydoves.landscapist.glide.GlideImage
 import java.util.*
@@ -55,7 +53,9 @@ fun ShowProductScreen(
         }
     }
     if (isLoading) {
-        Loading(modifier = Modifier.fillMaxSize())
+        LoadingInColumn(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight())
     } else {
         Card(
             modifier = Modifier

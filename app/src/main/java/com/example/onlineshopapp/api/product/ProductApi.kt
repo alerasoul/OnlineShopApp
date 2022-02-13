@@ -15,6 +15,13 @@ interface ProductApi {
         @Query("pageSize") pageSize: Int,
     ): ServiceResponse<Product>
 
+    @GET("product/cat/{categoryId}")
+    suspend fun getAllByCategoryId(
+        @Path("categoryId") categoryId: Int,
+        @Query("pageIndex") pageIndex: Int,
+        @Query("pageSize") pageSize: Int,
+    ): ServiceResponse<Product>
+
     @GET("product/{id}")
     suspend fun getProductById(@Path("id") id: Int): ServiceResponse<Product>
 

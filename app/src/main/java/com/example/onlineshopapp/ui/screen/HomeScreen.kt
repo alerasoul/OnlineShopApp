@@ -1,6 +1,9 @@
 package com.example.onlineshopapp.ui.screen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
@@ -8,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.onlineshopapp.ui.component.Loading
+import com.example.onlineshopapp.ui.component.LoadingInColumn
 import com.example.onlineshopapp.ui.component.product.ProductCategoryListView
 import com.example.onlineshopapp.ui.component.product.ProductFilterView
 import com.example.onlineshopapp.ui.component.product.ProductListItemView
@@ -16,7 +19,7 @@ import com.example.onlineshopapp.ui.component.slider.SliderListView
 import com.example.onlineshopapp.viewmodel.product.ProductViewModel
 
 
-//@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     navController: NavHostController,
@@ -35,7 +38,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(20.dp))
         }
         item {
-            ProductCategoryListView()
+            ProductCategoryListView(navController)
             Spacer(modifier = Modifier.height(20.dp))
         }
         item {
@@ -45,10 +48,10 @@ fun HomeScreen(
 
         if (productLoading.value) {
             item {
-                Loading(
+                LoadingInColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp), count = 1
+                        .height(200.dp)
                 )
             }
         } else {

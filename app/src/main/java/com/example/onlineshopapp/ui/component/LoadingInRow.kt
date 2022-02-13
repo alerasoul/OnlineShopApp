@@ -10,12 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Loading(modifier: Modifier, count: Int = 1) {
+fun LoadingInRow(modifier: Modifier, count: Int = 1) {
     LazyRow {
         items(count) {
             Card(

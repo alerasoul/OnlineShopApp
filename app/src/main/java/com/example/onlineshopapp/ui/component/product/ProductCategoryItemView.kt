@@ -15,20 +15,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.example.onlineshopapp.model.product.ProductCategory
 import com.skydoves.landscapist.glide.GlideImage
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProductCategoryItemView(productCategory: ProductCategory) {
+fun ProductCategoryItemView(productCategory: ProductCategory, navController: NavController) {
     Card(
         modifier = Modifier
             .width(140.dp)
             .height(200.dp)
             .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp), clip = true),
         shape = RoundedCornerShape(20.dp),
-        onClick = { /* TODO */ }
+        onClick = {
+            navController.navigate("product/${productCategory.id}/${productCategory.title}")
+        }
     ) {
         Box() {
             GlideImage(
