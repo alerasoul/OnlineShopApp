@@ -18,6 +18,7 @@ class ProductViewModel @Inject constructor(private var repository: ProductReposi
 
     var dataList = mutableStateOf<List<Product>>(listOf())
     var isLoading = mutableStateOf(true)
+    var data = mutableStateOf<Product?>(null)
 
     init {
         getProducts(0, 6) { response ->
@@ -31,26 +32,26 @@ class ProductViewModel @Inject constructor(private var repository: ProductReposi
     fun getProducts(
         pageIndex: Int,
         pageSize: Int,
-        onResponse: (response: ServiceResponse<List<Product>>) -> Unit,
+        onResponse: (response: ServiceResponse<Product>) -> Unit,
     ) {
         viewModelScope.launch {
-            var response = repository.getProducts(pageIndex, pageSize)
+            val response = repository.getProducts(pageIndex, pageSize)
             onResponse(response)
         }
     }
 
-    fun getNewProducts(onResponse: (response: ServiceResponse<List<Product>>) -> Unit) {
+    fun getNewProducts(onResponse: (response: ServiceResponse<Product>) -> Unit) {
         viewModelScope.launch {
-            var response = repository.getNewProducts()
+            val response = repository.getNewProducts()
             if (response.status == "OK")
                 dataList.value = response.data!!
             onResponse(response)
         }
     }
 
-    fun getPopularProducts(onResponse: (response: ServiceResponse<List<Product>>) -> Unit) {
+    fun getPopularProducts(onResponse: (response: ServiceResponse<Product>) -> Unit) {
         viewModelScope.launch {
-            var response = repository.getPopularProducts()
+            val response = repository.getPopularProducts()
             onResponse(response)
         }
     }

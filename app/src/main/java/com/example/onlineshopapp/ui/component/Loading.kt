@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Loading(modifier: Modifier, count: Int) {
+fun Loading(modifier: Modifier, count: Int = 1) {
     LazyRow {
         items(count) {
             Card(

@@ -9,7 +9,7 @@ import javax.inject.Inject
 @ActivityScoped
 class SliderRepository @Inject constructor(private val api: SliderApi) {
 
-    suspend fun getSliders(): ServiceResponse<List<Slider>> {
+    suspend fun getSliders(): ServiceResponse<Slider> {
         return try {
             api.getSliders()
         } catch (e: Exception) {

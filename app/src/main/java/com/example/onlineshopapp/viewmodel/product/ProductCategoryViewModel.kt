@@ -26,7 +26,7 @@ class ProductCategoryViewModel @Inject constructor(private var repository: Produ
         }
     }
 
-    fun getProductCategories(onResponse: (response: ServiceResponse<List<ProductCategory>>) -> Unit) {
+    fun getProductCategories(onResponse: (response: ServiceResponse<ProductCategory>) -> Unit) {
         viewModelScope.launch {
             var response = repository.getProductCategories()
             onResponse(response)

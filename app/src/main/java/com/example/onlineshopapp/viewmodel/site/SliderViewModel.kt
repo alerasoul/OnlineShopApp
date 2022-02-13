@@ -26,7 +26,7 @@ class SliderViewModel @Inject constructor(private var repository: SliderReposito
         }
     }
 
-    fun getSliders(onResponse: (response: ServiceResponse<List<Slider>>) -> Unit) {
+    fun getSliders(onResponse: (response: ServiceResponse<Slider>) -> Unit) {
         viewModelScope.launch {
             var response = repository.getSliders()
             onResponse(response)

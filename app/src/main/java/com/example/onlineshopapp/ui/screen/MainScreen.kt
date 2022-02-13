@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.example.onlineshopapp.ui.component.TopAppView
 
@@ -16,13 +17,24 @@ fun MainScreen() {
     var fullScreen by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
-            TopAppView()
+            if (!fullScreen)
+                TopAppView()
         }
     ) {
-        NavHost(navController = navController, startDestination = "Home") {
-            composable("Home") {
+        NavHost(navController = navController, startDestination = "home") {
+            composable("home") {
                 fullScreen = false
-                HomeScreen()
+                HomeScreen(navController)
+            }
+            composable("showProduct/{productId}",
+                arguments = listOf(
+                    navArgument("productId") { type = NavType.IntType }
+                )
+            ) { backStack ->
+                fullScreen = true
+                backStack.arguments?.getInt("productId").let {
+                    ShowProductScreen(it!!, navController)
+                }
             }
         }
     }

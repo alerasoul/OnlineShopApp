@@ -1,9 +1,6 @@
 package com.example.onlineshopapp.ui.screen
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
@@ -19,9 +16,10 @@ import com.example.onlineshopapp.ui.component.slider.SliderListView
 import com.example.onlineshopapp.viewmodel.product.ProductViewModel
 
 
-@OptIn(ExperimentalMaterialApi::class)
+//@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
+    navController: NavHostController,
     productViewModel: ProductViewModel = hiltViewModel(),
 ) {
 
@@ -49,13 +47,13 @@ fun HomeScreen(
             item {
                 Loading(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                         .height(200.dp), count = 1
                 )
             }
         } else {
             items(productList.value.size) { index ->
-                ProductListItemView(productList.value[index])
+                ProductListItemView(productList.value[index], navController)
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }
