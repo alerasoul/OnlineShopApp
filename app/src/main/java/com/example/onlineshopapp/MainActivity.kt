@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
             OnlineShopAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    MainScreen()
+                    MainScreen(this)
                 }
             }
         }

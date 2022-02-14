@@ -17,7 +17,10 @@ interface BasketEntityDao {
     fun update(userEntity: BasketEntity)
 
     @Query("select * from BasketEntity")
-    fun getAll(): LiveData<List<BasketEntity>>
+    fun getAll(): List<BasketEntity>
+
+    @Query("select * from BasketEntity")
+    fun getAllLive(): LiveData<List<BasketEntity>>
 
     @Query("delete from BasketEntity")
     fun deleteAll()

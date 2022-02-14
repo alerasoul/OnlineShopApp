@@ -21,11 +21,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
+import com.example.onlineshopapp.MainActivity
+import com.example.onlineshopapp.db.model.BasketEntity
+import com.example.onlineshopapp.db.viewmodel.BasketEntityViewModel
 import com.example.onlineshopapp.ui.component.LoadingInColumn
-import com.example.onlineshopapp.ui.component.LoadingInRow
 import com.example.onlineshopapp.viewmodel.product.ProductViewModel
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -34,6 +40,7 @@ fun ShowProductScreen(
     productId: Int,
     navController: NavHostController,
     productViewModel: ProductViewModel = hiltViewModel(),
+    basketViewModel: BasketEntityViewModel,
 ) {
     var data by remember { mutableStateOf(productViewModel.data) }
     var isLoading by remember { mutableStateOf(true) }
@@ -175,7 +182,26 @@ fun ShowProductScreen(
                     }
                     Spacer(modifier = Modifier.height(40.dp))
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val basket =
+                                    BasketEntity(
+                                        productId = productId,
+                                        quantity = 1,
+                                        sizeId = data.value!!.size!![selectedSize].id!!,
+                                        colorId = data.value!!.colors!![selectedColor].id!!,
+                                        image = data.value!!.image!!,
+                                        price = data.value!!.price!!.toLong(),
+                                        title = data.value!!.title!!,
+                                        hexColor = data.value!!.colors!![selectedColor].hexValue!!,
+                                        sizeTitle = data.value!!.size!![selectedSize].title!!
+                                    )
+                                basketViewModel.addToBasket(basket)
+                            }
+                            Toast.makeText(context, "Product added to basket", Toast.LENGTH_SHORT)
+                                .show()
+                            navController.popBackStack()
+                        },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .fillMaxWidth()

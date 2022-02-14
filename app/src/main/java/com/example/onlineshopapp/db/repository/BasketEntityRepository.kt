@@ -7,26 +7,42 @@ import com.example.onlineshopapp.db.dao.BasketEntityDao
 import com.example.onlineshopapp.db.model.BasketEntity
 
 class BasketEntityRepository(application: Application) {
-    lateinit var basketDao: BasketEntityDao
-    lateinit var basketEntityList: LiveData<List<BasketEntity>>
+    private lateinit var basketDao: BasketEntityDao
+    private var liveDataBasket: LiveData<List<BasketEntity>>
 
     init {
         val database = OnlineShopDatabase.getInstance(application)
         basketDao = database.getBasketEntityDao()
-        basketEntityList = basketDao.getAll()
+        liveDataBasket = basketDao.getAllLive()
     }
 
-    fun getBasketList(): LiveData<List<BasketEntity>> {
-        return basketEntityList
+    suspend fun getBasketList(): List<BasketEntity> {
+        return basketDao.getAll()
+    }
+
+    fun getBasketListLive(): LiveData<List<BasketEntity>> {
+        return liveDataBasket
     }
 
     suspend fun insert(basketEntity: BasketEntity) {
-        deleteAll()
         basketDao.addBasket(basketEntity)
     }
 
     suspend fun delete(basketEntity: BasketEntity) {
         basketDao.delete(basketEntity)
+    }
+
+    suspend fun increment(basketEntity: BasketEntity) {
+        basketEntity.quantity++
+        basketDao.update(basketEntity)
+    }
+
+    suspend fun decrement(basketEntity: BasketEntity) {
+        basketEntity.quantity--
+        if (basketEntity.quantity <= 0)
+            delete(basketEntity)
+        else
+            basketDao.update(basketEntity)
     }
 
     suspend fun deleteAll() {

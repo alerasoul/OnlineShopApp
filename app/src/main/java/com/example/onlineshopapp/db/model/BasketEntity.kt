@@ -5,8 +5,14 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class BasketEntity(
-    @PrimaryKey
-    val id: Int = 0,
-    var productId: Int?,
-    var quantity: Int?,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    var productId: Int,
+    var quantity: Int,
+    var colorId: Int,
+    var sizeId: Int,
+    var image: String,
+    var price: Long,
+    var title: String,
+    var hexColor: String,
+    var sizeTitle: String,
 )
