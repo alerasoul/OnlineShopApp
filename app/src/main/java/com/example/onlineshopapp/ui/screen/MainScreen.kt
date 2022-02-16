@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navDeepLink
 import com.example.onlineshopapp.MainActivity
 import com.example.onlineshopapp.db.viewmodel.BasketEntityViewModel
+import com.example.onlineshopapp.db.viewmodel.UserEntityViewModel
 import com.example.onlineshopapp.ui.component.TopAppView
 import com.example.onlineshopapp.util.ThisApp
 
@@ -21,8 +22,12 @@ fun MainScreen(mainActivity: MainActivity) {
     val navController = rememberNavController()
     var fullScreen by remember { mutableStateOf(false) }
     val basketViewModel = ViewModelProvider(mainActivity).get(BasketEntityViewModel::class.java)
+    val userEntityViewModel = ViewModelProvider(mainActivity).get(UserEntityViewModel::class.java)
     basketViewModel.getBasketListLive().observe(mainActivity) {
         basketViewModel.dataList.value = it
+    }
+    userEntityViewModel.getCurrentUser().observe(mainActivity) {
+        userEntityViewModel.currentUserEntity.value = it
     }
 
     Scaffold(
@@ -42,7 +47,7 @@ fun MainScreen(mainActivity: MainActivity) {
             }
             composable("proceedToPayment") {
                 fullScreen = true
-                UserPaymentScreen(navController,basketViewModel,mainActivity)
+                UserPaymentScreen(navController, basketViewModel, mainActivity)
             }
             composable("product/{categoryId}/{categoryTitle}",
                 arguments = listOf(
@@ -71,9 +76,13 @@ fun MainScreen(mainActivity: MainActivity) {
             }
             composable(
                 "invoice/{id}",
-                deepLinks = listOf(navDeepLink { uriPattern="app://onlineshop.ir/{id}" })
-            ){  backStackEntry ->
+                deepLinks = listOf(navDeepLink { uriPattern = "app://onlineshop.ir/{id}" })
+            ) { backStackEntry ->
                 InvoiceScreen(navController, backStackEntry.arguments?.getInt("id"))
+            }
+            composable("loginScreen") {
+                fullScreen = true
+                LoginScreen(navController, userEntityViewModel)
             }
         }
     }

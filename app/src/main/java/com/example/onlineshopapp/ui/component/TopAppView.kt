@@ -46,7 +46,9 @@ fun TopAppView(navController: NavHostController, basketViewModel: BasketEntityVi
                     }
                 }
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                navController.navigate("loginScreen")
+            }) {
                 Icon(imageVector = Icons.Outlined.Person, contentDescription = "")
             }
         }
