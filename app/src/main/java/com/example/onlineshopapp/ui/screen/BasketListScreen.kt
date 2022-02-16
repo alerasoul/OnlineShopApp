@@ -24,7 +24,7 @@ import com.example.onlineshopapp.ui.component.BasketListItemView
 @Composable
 fun BasketListScreen(navController: NavHostController, basketViewModel: BasketEntityViewModel) {
     val dataList by remember { mutableStateOf(basketViewModel.dataList) }
-
+    var totalPrice: Long = 0
     LazyColumn {
         item {
             Row {
@@ -49,6 +49,7 @@ fun BasketListScreen(navController: NavHostController, basketViewModel: BasketEn
                 }
             }
         }
+
         item {
             if (dataList.value.isEmpty()) {
                 Spacer(modifier = Modifier.height(50.dp))
@@ -58,39 +59,55 @@ fun BasketListScreen(navController: NavHostController, basketViewModel: BasketEn
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .fillMaxHeight())
+                        .fillMaxSize())
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }
+
         items(dataList.value.size) { index ->
+            totalPrice += (dataList.value[index].quantity) * (dataList.value[index].price)
             BasketListItemView(dataList.value[index], basketViewModel, navController)
             Spacer(modifier = Modifier.height(15.dp))
         }
+
         item {
             if (dataList.value.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Row(Modifier.fillMaxWidth(), Arrangement.Center) {
+                    Text(text = "Total price :", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(text = "${totalPrice}T",
+                        fontSize = 19.sp,
+                        fontWeight = FontWeight.Normal, color = Color.DarkGray)
+                }
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     onClick = {
+                        navController.navigate("proceedToPayment")
                     },
                     shape = RoundedCornerShape(10.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp)
+                        .padding(20.dp, 0.dp)
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.DarkGray
                     )
                 ) {
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterVertically),
                         text = "Proceed To Payment",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.5.sp,
-                        color = Color.White
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
                     )
                 }
+                Spacer(modifier = Modifier.height(20.dp))
             }
-            Spacer(modifier = Modifier.height(20.dp))
         }
-
     }
+
 }

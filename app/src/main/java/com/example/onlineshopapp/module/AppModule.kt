@@ -9,8 +9,6 @@ import com.example.onlineshopapp.api.product.ProductCategoryApi
 import com.example.onlineshopapp.api.site.BlogApi
 import com.example.onlineshopapp.api.site.ContentApi
 import com.example.onlineshopapp.api.site.SliderApi
-import com.example.onlineshopapp.config.UnsafeSSLConfig
-import com.example.onlineshopapp.model.product.ProductCategory
 import com.example.onlineshopapp.repository.customer.UserRepository
 import com.example.onlineshopapp.repository.invoice.InvoiceRepository
 import com.example.onlineshopapp.repository.invoice.TransactionRepository
@@ -24,8 +22,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 
@@ -69,6 +65,5 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUser(api: UserApi) = UserRepository(api)
-
 
 }
