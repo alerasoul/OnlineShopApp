@@ -33,7 +33,7 @@ fun MainScreen(mainActivity: MainActivity) {
     Scaffold(
         topBar = {
             if (!fullScreen)
-                TopAppView(navController, basketViewModel)
+                TopAppView(navController, basketViewModel, userEntityViewModel)
         }
     ) {
         NavHost(navController = navController, startDestination = "home") {
@@ -83,6 +83,11 @@ fun MainScreen(mainActivity: MainActivity) {
             composable("loginScreen") {
                 fullScreen = true
                 LoginScreen(navController, userEntityViewModel)
+            }
+            composable("dashboard") {
+                fullScreen = true
+                DashboardScreen(navController, userEntityViewModel)
+
             }
         }
     }

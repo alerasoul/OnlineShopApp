@@ -17,9 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.onlineshopapp.db.viewmodel.BasketEntityViewModel
+import com.example.onlineshopapp.db.viewmodel.UserEntityViewModel
 
 @Composable
-fun TopAppView(navController: NavHostController, basketViewModel: BasketEntityViewModel) {
+fun TopAppView(
+    navController: NavHostController,
+    basketViewModel: BasketEntityViewModel,
+    userEntityViewModel: UserEntityViewModel,
+) {
     TopAppBar(
         title = {
             Text(text = "Online Shop", fontSize = 25.sp)
@@ -47,7 +52,10 @@ fun TopAppView(navController: NavHostController, basketViewModel: BasketEntityVi
                 }
             }
             IconButton(onClick = {
-                navController.navigate("loginScreen")
+                if (!userEntityViewModel.isLoggedIn())
+                    navController.navigate("loginScreen")
+                else
+                    navController.navigate("dashboard")
             }) {
                 Icon(imageVector = Icons.Outlined.Person, contentDescription = "")
             }

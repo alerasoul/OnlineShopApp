@@ -6,6 +6,7 @@ import com.example.onlineshopapp.db.OnlineShopDatabase
 import com.example.onlineshopapp.db.dao.UserEntityDao
 import com.example.onlineshopapp.db.model.UserEntity
 
+
 class UserEntityRepository(application: Application) {
     lateinit var userDao: UserEntityDao
     lateinit var currentUserEntity: LiveData<UserEntity>

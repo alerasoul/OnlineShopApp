@@ -35,4 +35,7 @@ class UserEntityViewModel(application: Application) : AndroidViewModel(applicati
         return repository.getCurrentUser()
     }
 
+    fun isLoggedIn(): Boolean {
+        return currentUserEntity.value != null
+    }
 }

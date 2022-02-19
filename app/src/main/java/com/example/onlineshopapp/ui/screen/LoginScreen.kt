@@ -161,7 +161,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.CenterVertically),
-                        text = "Sing in",
+                        text = "Login",
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                         color = Color.White,

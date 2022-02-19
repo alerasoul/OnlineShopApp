@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.onlineshopapp.db.model.BasketEntity
 
+
 @Dao
 interface BasketEntityDao {
 
