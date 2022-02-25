@@ -8,8 +8,8 @@ import com.example.onlineshopapp.db.model.UserEntity
 
 
 class UserEntityRepository(application: Application) {
-    lateinit var userDao: UserEntityDao
-    lateinit var currentUserEntity: LiveData<UserEntity>
+    var userDao: UserEntityDao
+    var currentUserEntity: LiveData<UserEntity>
 
     init {
         val database = OnlineShopDatabase.getInstance(application)

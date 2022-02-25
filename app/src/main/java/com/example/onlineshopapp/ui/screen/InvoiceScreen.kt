@@ -1,7 +1,10 @@
 package com.example.onlineshopapp.ui.screen
 
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
-class InvoiceScreen(navController: NavController, int: Int?) {
-
+@Composable
+fun InvoiceScreen(navController: NavController, id: Int?) {
+    Text(text = id.toString())
 }

@@ -1,9 +1,9 @@
 package com.example.onlineshopapp.util
 
-import androidx.compose.runtime.mutableStateOf
-
 class ThisApp {
     companion object {
+        var token = ""
+        var userId = 0
         var categoryId = 0
     }
 }

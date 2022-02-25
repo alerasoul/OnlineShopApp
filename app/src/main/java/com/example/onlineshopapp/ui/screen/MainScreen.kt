@@ -59,7 +59,7 @@ fun MainScreen(mainActivity: MainActivity) {
                 val categoryId = backStack.arguments?.getInt("categoryId")
                 val categoryTitle = backStack.arguments?.getString("categoryTitle")
                 ThisApp.categoryId = categoryId!!
-                ProductScreen(categoryId = categoryId!!,
+                ProductScreen(categoryId = categoryId,
                     categoryTitle = categoryTitle!!,
                     navController = navController)
 
@@ -76,7 +76,10 @@ fun MainScreen(mainActivity: MainActivity) {
             }
             composable(
                 "invoice/{id}",
-                deepLinks = listOf(navDeepLink { uriPattern = "app://onlineshop.ir/{id}" })
+                deepLinks = listOf(navDeepLink { uriPattern = "app://onlineshop.ir/{id}" }),
+                arguments = listOf(
+                    navArgument("id") { type = NavType.IntType }
+                )
             ) { backStackEntry ->
                 InvoiceScreen(navController, backStackEntry.arguments?.getInt("id"))
             }
@@ -87,7 +90,10 @@ fun MainScreen(mainActivity: MainActivity) {
             composable("dashboard") {
                 fullScreen = true
                 DashboardScreen(navController, userEntityViewModel)
-
+            }
+            composable("invoices") {
+                fullScreen = true
+                InvoiceListScreen(navController)
             }
         }
     }

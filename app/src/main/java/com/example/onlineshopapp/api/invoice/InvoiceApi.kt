@@ -24,7 +24,7 @@ interface InvoiceApi {
         @Path("userId") userId: Int,
         @Query("pageIndex") pageIndex: Int,
         @Query("pageSize") pageSize: Int,
-        @Header("Authorization") token: String,
+        @Header("Authorization") token: String
     ): ServiceResponse<Invoice>
 
 }

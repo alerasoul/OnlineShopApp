@@ -1,5 +1,6 @@
 package com.example.onlineshopapp.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.onlineshopapp.db.viewmodel.UserEntityViewModel
 import com.example.onlineshopapp.ui.component.AdvancedButton
@@ -22,12 +24,14 @@ import com.example.onlineshopapp.ui.theme.Light1
 import com.example.onlineshopapp.ui.theme.Light2
 import com.example.onlineshopapp.ui.theme.Light3
 import com.example.onlineshopapp.ui.theme.Light4
+import com.example.onlineshopapp.util.ThisApp
+import kotlin.system.exitProcess
 
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun DashboardScreen(
-    navController: NavHostController,
+    navController: NavController,
     userEntityViewModel: UserEntityViewModel,
 ) {
     var currentUser = userEntityViewModel.currentUserEntity.value
@@ -90,7 +94,11 @@ fun DashboardScreen(
         )
         LazyColumn {
             item {
-                AdvancedButton("Invoices", "Show your invoices", Icons.Filled.Star, Light1) {}
+                AdvancedButton("Invoices", "Show your invoices", Icons.Filled.Star, Light1) {
+                    ThisApp.userId = currentUser!!.id
+                    ThisApp.token = currentUser.token!!
+                    navController.navigate("invoices")
+                }
             }
             item {
                 AdvancedButton("About", "About the application", Icons.Outlined.Info, Light2) {}
