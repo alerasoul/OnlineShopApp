@@ -10,6 +10,8 @@ val Light1 = Color(0xFFFC997C)
 val Light2 = Color(0xFF98B4AA)
 val Light3 = Color(0xFF91DEAE)
 val Light4 = Color(0xFF977CDE)
+val LightRed = Color(0xFFFC655A)
+val LightGreen = Color(0xFF4CAF50)
 
 
 

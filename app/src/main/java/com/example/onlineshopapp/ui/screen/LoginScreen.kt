@@ -37,7 +37,7 @@ fun LoginScreen(
     userEntityViewModel: UserEntityViewModel,
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
-    var context = LocalContext.current
+    val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
 
     var username by remember { mutableStateOf(TextFieldValue()) }
@@ -136,7 +136,7 @@ fun LoginScreen(
                         userViewModel.login(UserVM(username = username.text,
                             password = password.text)) { response ->
                             if (response.status == "OK") {
-                                var user = response.data!![0]
+                                val user = response.data!![0]
                                 CoroutineScope(Dispatchers.IO).launch {
                                     userEntityViewModel.insert(user.convertToUserEntity())
                                 }

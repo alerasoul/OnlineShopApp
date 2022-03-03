@@ -3,8 +3,6 @@ package com.example.onlineshopapp.repository.invoice
 import com.example.onlineshopapp.api.invoice.TransactionApi
 import com.example.onlineshopapp.model.ServiceResponse
 import com.example.onlineshopapp.model.invoice.PaymentTransaction
-import com.example.onlineshopapp.model.invoice.Transaction
-import com.example.onlineshopapp.repository.base.BaseRepository
 import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 

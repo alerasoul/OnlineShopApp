@@ -1,10 +1,12 @@
 package com.example.onlineshopapp.ui.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.ExitToApp
@@ -17,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.onlineshopapp.db.viewmodel.UserEntityViewModel
 import com.example.onlineshopapp.ui.component.AdvancedButton
 import com.example.onlineshopapp.ui.theme.Light1
@@ -25,8 +26,9 @@ import com.example.onlineshopapp.ui.theme.Light2
 import com.example.onlineshopapp.ui.theme.Light3
 import com.example.onlineshopapp.ui.theme.Light4
 import com.example.onlineshopapp.util.ThisApp
-import kotlin.system.exitProcess
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -34,7 +36,7 @@ fun DashboardScreen(
     navController: NavController,
     userEntityViewModel: UserEntityViewModel,
 ) {
-    var currentUser = userEntityViewModel.currentUserEntity.value
+    val currentUser = userEntityViewModel.currentUserEntity.value
     Column() {
         Row(Modifier.padding(20.dp)) {
             IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
@@ -68,18 +70,16 @@ fun DashboardScreen(
                     color = Color.Black,
                 )
                 Text(
-                    text = "${currentUser!!.username}",
+                    text = "${currentUser.username}",
                     fontSize = 21.sp,
                     color = Color.Gray,
                 )
             }
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             IconButton(onClick = { navController.popBackStack() },
                 Modifier
                     .fillMaxWidth()
-                    .size(40.dp)
-                    .weight(1f)
-                    .padding(100.dp, 0.dp, 0.dp, 0.dp)) {
+                    .weight(1f)) {
                 Icon(imageVector = Icons.Filled.Edit, contentDescription = "")
             }
         }
@@ -95,19 +95,24 @@ fun DashboardScreen(
         LazyColumn {
             item {
                 AdvancedButton("Invoices", "Show your invoices", Icons.Filled.Star, Light1) {
-                    ThisApp.userId = currentUser!!.id
+                    ThisApp.userId = currentUser!!.userId!!
                     ThisApp.token = currentUser.token!!
                     navController.navigate("invoices")
                 }
             }
             item {
+                AdvancedButton("Change Password", "Change your password", Icons.Filled.Lock, Light3) {}
+            }
+            item {
                 AdvancedButton("About", "About the application", Icons.Outlined.Info, Light2) {}
             }
             item {
-                AdvancedButton("Help", "Help and feedback", Icons.Filled.Phone, Light3) {}
-            }
-            item {
-                AdvancedButton("Logout", "Logout", Icons.Outlined.ExitToApp, Light4) {}
+                AdvancedButton("Logout", "Logout", Icons.Outlined.ExitToApp, Light4) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        userEntityViewModel.deleteAll()
+                    }
+                    navController.navigate("home")
+                }
             }
         }
     }

@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.onlineshopapp.ui.component.LoadingInColumn
-import com.example.onlineshopapp.ui.component.LoadingInRow
 import com.example.onlineshopapp.ui.component.product.ProductListItemView
 import com.example.onlineshopapp.viewmodel.product.ProductByCategoryViewModel
 
@@ -30,7 +29,7 @@ fun ProductScreen(
     val dataList by remember { mutableStateOf(viewModel.dataList) }
     val isLoading by remember { mutableStateOf(viewModel.isLoading) }
 
-    Column() {
+    Column {
         LazyColumn(
             modifier = Modifier.padding(20.dp, 0.dp)
         ) {
@@ -48,7 +47,7 @@ fun ProductScreen(
                 Spacer(modifier = Modifier.height(10.dp))
             }
             if (isLoading.value) {
-                item() {
+                item {
                     LoadingInColumn(modifier = Modifier
                         .fillMaxWidth()
                         .height(200.dp))

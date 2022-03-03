@@ -21,6 +21,7 @@ import com.example.onlineshopapp.util.ThisApp
 fun MainScreen(mainActivity: MainActivity) {
     val navController = rememberNavController()
     var fullScreen by remember { mutableStateOf(false) }
+    var showHomeIcon by remember { mutableStateOf(false) }
     val basketViewModel = ViewModelProvider(mainActivity).get(BasketEntityViewModel::class.java)
     val userEntityViewModel = ViewModelProvider(mainActivity).get(UserEntityViewModel::class.java)
     basketViewModel.getBasketListLive().observe(mainActivity) {
@@ -33,11 +34,12 @@ fun MainScreen(mainActivity: MainActivity) {
     Scaffold(
         topBar = {
             if (!fullScreen)
-                TopAppView(navController, basketViewModel, userEntityViewModel)
+                TopAppView(navController, basketViewModel, userEntityViewModel, showHomeIcon)
         }
     ) {
         NavHost(navController = navController, startDestination = "home") {
             composable("home") {
+                showHomeIcon = false
                 fullScreen = false
                 HomeScreen(navController)
             }
@@ -47,7 +49,7 @@ fun MainScreen(mainActivity: MainActivity) {
             }
             composable("proceedToPayment") {
                 fullScreen = true
-                UserPaymentScreen(navController, basketViewModel, mainActivity)
+                UserPaymentScreen(navController, basketViewModel, userEntityViewModel, mainActivity)
             }
             composable("product/{categoryId}/{categoryTitle}",
                 arguments = listOf(
@@ -55,6 +57,7 @@ fun MainScreen(mainActivity: MainActivity) {
                     navArgument("categoryTitle") { type = NavType.StringType }
                 )
             ) { backStack ->
+                showHomeIcon = false
                 fullScreen = false
                 val categoryId = backStack.arguments?.getInt("categoryId")
                 val categoryTitle = backStack.arguments?.getString("categoryTitle")
@@ -81,6 +84,12 @@ fun MainScreen(mainActivity: MainActivity) {
                     navArgument("id") { type = NavType.IntType }
                 )
             ) { backStackEntry ->
+                showHomeIcon = true
+                fullScreen = false
+                if (userEntityViewModel.currentUserEntity.value != null) {
+                    ThisApp.token = userEntityViewModel.currentUserEntity.value!!.token!!
+                    ThisApp.invoiceId = backStackEntry.arguments?.getInt("id")!!
+                }
                 InvoiceScreen(navController, backStackEntry.arguments?.getInt("id"))
             }
             composable("loginScreen") {

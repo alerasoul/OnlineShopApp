@@ -25,10 +25,10 @@ fun InvoiceListScreen(
     navController: NavController,
     viewModel: InvoiceViewModel = hiltViewModel(),
 ) {
-    var dataList by remember { mutableStateOf(viewModel.dataList) }
-    var isLoading by remember { mutableStateOf(viewModel.isLoading) }
+    val dataList by remember { mutableStateOf(viewModel.dataList) }
+    val isLoading by remember { mutableStateOf(viewModel.isLoading) }
 
-    Column() {
+    Column {
         Row(Modifier.padding(20.dp)) {
             IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
                 Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
@@ -47,19 +47,19 @@ fun InvoiceListScreen(
         LazyColumn(
             modifier = Modifier.padding(20.dp, 0.dp)
         ) {
-            items(dataList.value.size) { index ->
-                viewModel.onScrollPositionChange(index)
-                if ((index + 1) >= (viewModel.pageIndex.value * viewModel.pageSize) && !viewModel.isLoading.value) {
-                    viewModel.nextPage()
-                }
-                InvoiceListItemView(dataList.value[index], navController)
-                Spacer(modifier = Modifier.height(10.dp))
-            }
             if (isLoading.value) {
                 item {
                     LoadingInColumn(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp))
+                        .fillMaxSize())
+                }
+            } else {
+                items(dataList.value.size) { index ->
+                    viewModel.onScrollPositionChange(index)
+                    if ((index + 1) >= (viewModel.pageIndex.value * viewModel.pageSize) && !viewModel.isLoading.value) {
+                        viewModel.nextPage()
+                    }
+                    InvoiceListItemView(dataList.value[index], navController)
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

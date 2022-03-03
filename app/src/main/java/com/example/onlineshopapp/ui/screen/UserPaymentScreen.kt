@@ -2,7 +2,7 @@ package com.example.onlineshopapp.ui.screen
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,37 +28,43 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.onlineshopapp.MainActivity
 import com.example.onlineshopapp.db.viewmodel.BasketEntityViewModel
+import com.example.onlineshopapp.db.viewmodel.UserEntityViewModel
 import com.example.onlineshopapp.model.customer.UserVM
 import com.example.onlineshopapp.model.invoice.InvoiceItem
 import com.example.onlineshopapp.model.invoice.PaymentTransaction
+import com.example.onlineshopapp.viewmodel.customer.UserViewModel
 import com.example.onlineshopapp.viewmodel.invoice.TransactionViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserPaymentScreen(
     navController: NavController,
     basketEntityViewModel: BasketEntityViewModel,
+    userEntityViewModel: UserEntityViewModel,
     mainActivity: MainActivity,
     transactionViewModel: TransactionViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel(),
 ) {
-    var context = LocalContext.current
+    val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
-
-    var firstName by remember { mutableStateOf(TextFieldValue()) }
+    val currentUser by remember { mutableStateOf(userEntityViewModel.currentUserEntity) }
+    val isLoggedIn by remember { mutableStateOf(userEntityViewModel.currentUserEntity.value != null) }
+    var firstName by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.firstName!! else "")) }
     var firstNameError by remember { mutableStateOf(false) }
-    var lastName by remember { mutableStateOf(TextFieldValue()) }
+    var lastName by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.lastName!! else "")) }
     var lastNameError by remember { mutableStateOf(false) }
-    var phone by remember { mutableStateOf(TextFieldValue()) }
+    var phone by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.phone!! else "")) }
     var phoneError by remember { mutableStateOf(false) }
-    var address by remember { mutableStateOf(TextFieldValue()) }
+    var address by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.address!! else "")) }
     var addressError by remember { mutableStateOf(false) }
-    var postalCode by remember { mutableStateOf(TextFieldValue()) }
+    var postalCode by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.postalCode!! else "")) }
     var postalCodeError by remember { mutableStateOf(false) }
-    var username by remember { mutableStateOf(TextFieldValue()) }
+    var username by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.username!! else "")) }
     var usernameError by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf(TextFieldValue()) }
     var passwordError by remember { mutableStateOf(false) }
-
-
 
     Column {
         Row {
@@ -131,6 +137,7 @@ fun UserPaymentScreen(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     value = username,
+                    enabled = currentUser.value == null,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next),
                     onValueChange = {
@@ -151,30 +158,34 @@ fun UserPaymentScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = password,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next),
-                    onValueChange = {
-                        password = it
-                        passwordError = false
-                    },
-                    label = { Text(text = "Password") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    trailingIcon = {
-                        if (passwordError) {
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
+                if (currentUser.value == null) {
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = password,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next),
+                        onValueChange = {
+                            password = it
+                            passwordError = false
+                        },
+                        label = { Text(text = "Password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        trailingIcon = {
+                            if (passwordError) {
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                            }
                         }
+                    )
+                    if (passwordError) {
+                        Text(text = "Please enter your password",
+                            color = Color.Red,
+                            fontSize = 12.sp)
                     }
-                )
-                if (passwordError) {
-                    Text(text = "Please enter your password", color = Color.Red, fontSize = 12.sp)
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
-                Spacer(modifier = Modifier.height(10.dp))
 
                 OutlinedTextField(
                     singleLine = true,
@@ -258,7 +269,7 @@ fun UserPaymentScreen(
                                 lastNameError = true
                             if (username.text.isEmpty())
                                 usernameError = true
-                            if (password.text.isEmpty())
+                            if (currentUser.value == null && password.text.isEmpty())
                                 passwordError = true
                             if (phone.text.isEmpty())
                                 phoneError = true
@@ -268,7 +279,8 @@ fun UserPaymentScreen(
                                 addressError = true
                             if (firstNameError || lastNameError || usernameError || passwordError || phoneError || postalCodeError || addressError)
                                 return@Button
-                            var userInfo = UserVM(
+                            val userInfo = UserVM(
+                                id = if (currentUser.value == null) null else currentUser.value!!.id,
                                 username = username.text,
                                 password = password.text,
                                 firstName = firstName.text,
@@ -277,21 +289,35 @@ fun UserPaymentScreen(
                                 address = address.text,
                                 postalCode = postalCode.text,
                             )
-                            var items = ArrayList<InvoiceItem>()
+                            val items = ArrayList<InvoiceItem>()
                             basketEntityViewModel.dataList.value.forEach {
                                 items.add(InvoiceItem.convertFromBasket(it))
                             }
                             isLoading = true
-                            var request = PaymentTransaction(items = items, user = userInfo)
+                            val request = PaymentTransaction(items = items, user = userInfo)
                             transactionViewModel.goToPayment(request) { response ->
                                 if (response.status == "OK" && response.data!!.isNotEmpty()) {
-                                    //TODO:OPEN BROWSER
-                                    var intent =
+                                    if (currentUser.value == null) {
+                                        userViewModel.login(UserVM(username = username.text,
+                                            password = password.text)) { userResponse ->
+                                            if (userResponse.status == "OK") {
+                                                val user = userResponse.data!![0]
+                                                CoroutineScope(Dispatchers.IO).launch {
+                                                    userEntityViewModel.insert(user.convertToUserEntity())
+                                                }
+                                            }
+                                        }
+                                    }
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        basketEntityViewModel.deleteAll()
+                                        mainActivity.finish()
+                                    }
+                                    val intent =
                                         Intent(Intent.ACTION_VIEW, Uri.parse(response.data[0]))
                                     context.startActivity(intent)
-                                    mainActivity.finish()
                                 } else if (response.message!!.isNotEmpty())
-                                    Log.e("TAGTAG", response.message)
+                                    Toast.makeText(context, response.message, Toast.LENGTH_SHORT)
+                                        .show()
                                 isLoading = false
                             }
 

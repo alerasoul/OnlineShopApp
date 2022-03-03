@@ -40,7 +40,7 @@ class InvoiceViewModel @Inject constructor(private var repository: InvoiceReposi
         }
     }
 
-    private fun getInvoiceByUserId(
+    fun getInvoiceByUserId(
         userId: Int,
         pageIndex: Int,
         pageSize: Int,

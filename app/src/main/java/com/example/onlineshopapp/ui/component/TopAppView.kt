@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
@@ -24,6 +25,7 @@ fun TopAppView(
     navController: NavHostController,
     basketViewModel: BasketEntityViewModel,
     userEntityViewModel: UserEntityViewModel,
+    showHomeIcon:Boolean
 ) {
     TopAppBar(
         title = {
@@ -32,6 +34,11 @@ fun TopAppView(
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
         actions = {
+            if(showHomeIcon){
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(imageVector = Icons.Filled.Home, contentDescription = "")
+                }
+            }
             IconButton(onClick = { navController.navigate("basket") }) {
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Icon(imageVector = Icons.Filled.ShoppingCart, contentDescription = "")
