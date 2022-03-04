@@ -1,8 +1,5 @@
 package com.example.onlineshopapp.ui.screen
 
-import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,39 +12,28 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.example.onlineshopapp.MainActivity
-import com.example.onlineshopapp.db.viewmodel.BasketEntityViewModel
+import androidx.navigation.NavHostController
 import com.example.onlineshopapp.db.viewmodel.UserEntityViewModel
 import com.example.onlineshopapp.model.customer.UserVM
-import com.example.onlineshopapp.model.invoice.InvoiceItem
-import com.example.onlineshopapp.model.invoice.PaymentTransaction
 import com.example.onlineshopapp.viewmodel.customer.UserViewModel
-import com.example.onlineshopapp.viewmodel.invoice.TransactionViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun UserPaymentScreen(
-    navController: NavController,
-    basketEntityViewModel: BasketEntityViewModel,
+fun EditProfileScreen(
+    navController: NavHostController,
     userEntityViewModel: UserEntityViewModel,
-    mainActivity: MainActivity,
-    transactionViewModel: TransactionViewModel = hiltViewModel(),
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
     var isLoading by remember { mutableStateOf(false) }
     val currentUser by remember { mutableStateOf(userEntityViewModel.currentUserEntity) }
     val isLoggedIn by remember { mutableStateOf(userEntityViewModel.currentUserEntity.value != null) }
@@ -63,8 +49,6 @@ fun UserPaymentScreen(
     var postalCodeError by remember { mutableStateOf(false) }
     var username by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.username!! else "")) }
     var usernameError by remember { mutableStateOf(false) }
-    var password by remember { mutableStateOf(TextFieldValue()) }
-    var passwordError by remember { mutableStateOf(false) }
 
     Column {
         Row {
@@ -158,35 +142,6 @@ fun UserPaymentScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                if (currentUser.value == null) {
-                    OutlinedTextField(
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        value = password,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Next),
-                        onValueChange = {
-                            password = it
-                            passwordError = false
-                        },
-                        label = { Text(text = "Password") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        trailingIcon = {
-                            if (passwordError) {
-                                Icon(imageVector = Icons.Filled.Warning,
-                                    contentDescription = "error",
-                                    tint = Color.Red)
-                            }
-                        }
-                    )
-                    if (passwordError) {
-                        Text(text = "Please enter your password",
-                            color = Color.Red,
-                            fontSize = 12.sp)
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
                 OutlinedTextField(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -269,59 +224,38 @@ fun UserPaymentScreen(
                                 lastNameError = true
                             if (username.text.isEmpty())
                                 usernameError = true
-                            if (currentUser.value == null && password.text.isEmpty())
-                                passwordError = true
                             if (phone.text.isEmpty())
                                 phoneError = true
                             if (postalCode.text.isEmpty())
                                 postalCodeError = true
                             if (address.text.isEmpty())
                                 addressError = true
-                            if (firstNameError || lastNameError || usernameError || passwordError || phoneError || postalCodeError || addressError)
+                            if (firstNameError || lastNameError || usernameError || phoneError || postalCodeError || addressError)
                                 return@Button
                             val userInfo = UserVM(
-                                id = if (currentUser.value == null) null else currentUser.value!!.id,
-                                customerId = if (currentUser.value == null) null else currentUser.value!!.customerId,
+                                id = currentUser.value!!.id,
+                                customerId = currentUser.value!!.customerId,
                                 username = username.text,
-                                password = password.text,
                                 firstName = firstName.text,
                                 lastName = lastName.text,
                                 phone = phone.text,
                                 address = address.text,
                                 postalCode = postalCode.text,
                             )
-                            val items = ArrayList<InvoiceItem>()
-                            basketEntityViewModel.dataList.value.forEach {
-                                items.add(InvoiceItem.convertFromBasket(it))
-                            }
+                            userInfo.token = currentUser.value!!.token!!
                             isLoading = true
-                            val request = PaymentTransaction(items = items, user = userInfo)
-                            transactionViewModel.goToPayment(request) { response ->
-                                if (response.status == "OK" && response.data!!.isNotEmpty()) {
-                                    if (currentUser.value == null) {
-                                        userViewModel.login(UserVM(username = username.text,
-                                            password = password.text)) { userResponse ->
-                                            if (userResponse.status == "OK") {
-                                                val user = userResponse.data!![0]
-                                                CoroutineScope(Dispatchers.IO).launch {
-                                                    userEntityViewModel.insert(user.convertToUserEntity())
-                                                }
-                                            }
-                                        }
-                                    }
+                            userViewModel.update(userInfo) { response ->
+                                if (response.status == "OK") {
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        basketEntityViewModel.deleteAll()
-                                        mainActivity.finish()
+                                        val userEntity = userInfo.convertToUserEntity()
+                                        userEntity.id = currentUser.value!!.id
+                                        userEntity.token = currentUser.value!!.token!!
+                                        userEntityViewModel.update(userEntity)
                                     }
-                                    val intent =
-                                        Intent(Intent.ACTION_VIEW, Uri.parse(response.data[0]))
-                                    context.startActivity(intent)
-                                } else if (response.message!!.isNotEmpty())
-                                    Toast.makeText(context, response.message, Toast.LENGTH_SHORT)
-                                        .show()
-                                isLoading = false
+                                    isLoading = false
+                                    navController.popBackStack()
+                                }
                             }
-
                         },
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
@@ -336,7 +270,7 @@ fun UserPaymentScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterVertically),
-                            text = "\$Pay",
+                            text = "Update Profile",
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.5.sp,
                             color = Color.White,
@@ -359,4 +293,3 @@ fun UserPaymentScreen(
         }
     }
 }
-

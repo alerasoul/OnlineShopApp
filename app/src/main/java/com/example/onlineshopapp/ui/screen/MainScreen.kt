@@ -104,6 +104,10 @@ fun MainScreen(mainActivity: MainActivity) {
                 fullScreen = true
                 InvoiceListScreen(navController)
             }
+            composable("editProfile") {
+                fullScreen = true
+                EditProfileScreen(navController, userEntityViewModel)
+            }
         }
     }
 }

@@ -8,9 +8,9 @@ import com.example.onlineshopapp.db.model.UserEntity
 import com.example.onlineshopapp.db.repository.UserEntityRepository
 
 class UserEntityViewModel(application: Application) : AndroidViewModel(application) {
+
     var repository = UserEntityRepository(application)
 
-    //    var currentUserEntity = repository.getCurrentUser()
     var currentUserEntity = mutableStateOf<UserEntity?>(null)
 
     suspend fun insert(userEntity: UserEntity) {

@@ -54,7 +54,7 @@ fun DashboardScreen(
             )
         }
         Spacer(modifier = Modifier.height(25.dp))
-        Row(Modifier.padding(20.dp)) {
+        Row(Modifier.padding(20.dp).fillMaxWidth()) {
             Card(modifier = Modifier.size(70.dp),
                 backgroundColor = Color.LightGray,
                 shape = RoundedCornerShape(26.dp)) {
@@ -63,7 +63,10 @@ fun DashboardScreen(
                     contentDescription = "")
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Column {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)) {
                 Text(
                     text = "${currentUser!!.firstName} ${currentUser.lastName}",
                     fontSize = 26.sp,
@@ -75,11 +78,12 @@ fun DashboardScreen(
                     color = Color.Gray,
                 )
             }
-            Spacer(modifier = Modifier.width(10.dp))
-            IconButton(onClick = { navController.popBackStack() },
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1f)) {
+            IconButton(
+                onClick = {
+                    ThisApp.token = currentUser!!.token!!
+                    navController.navigate("editProfile")
+                }
+            ) {
                 Icon(imageVector = Icons.Filled.Edit, contentDescription = "")
             }
         }
@@ -101,7 +105,10 @@ fun DashboardScreen(
                 }
             }
             item {
-                AdvancedButton("Change Password", "Change your password", Icons.Filled.Lock, Light3) {}
+                AdvancedButton("Change Password",
+                    "Change your password",
+                    Icons.Filled.Lock,
+                    Light3) {}
             }
             item {
                 AdvancedButton("About", "About the application", Icons.Outlined.Info, Light2) {}

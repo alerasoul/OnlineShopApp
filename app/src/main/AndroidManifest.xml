@@ -3,6 +3,7 @@
     package="com.example.onlineshopapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".config.OnlineShopApplication"
         android:allowBackup="true"
@@ -12,22 +13,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlineShopApp">
         <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:noHistory="true"
+            android:label="@string/title_activity_splash"
+            android:theme="@style/Theme.OnlineShopApp.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.OnlineShopApp.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="onlineshop.ir"
                     android:scheme="app" />
-
             </intent-filter>
         </activity>
     </application>

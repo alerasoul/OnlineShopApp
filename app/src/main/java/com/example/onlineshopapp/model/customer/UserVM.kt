@@ -9,11 +9,11 @@ data class UserVM(
     var id: Int? = null,
     var lastName: String? = "",
     var oldPassword: String? = null,
-    var password: String?,
+    var password: String="",
     var phone: String? = "",
     var postalCode: String? = "",
     var repeatPassword: String? = null,
-    var token: String? = null,
+    var token: String? = "",
     var username: String?,
 ) {
     fun convertToUserEntity(): UserEntity {
