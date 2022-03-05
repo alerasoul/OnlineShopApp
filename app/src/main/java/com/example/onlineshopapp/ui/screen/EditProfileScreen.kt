@@ -1,5 +1,11 @@
 package com.example.onlineshopapp.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,141 +56,216 @@ fun EditProfileScreen(
     var username by remember { mutableStateOf(TextFieldValue(if (isLoggedIn) currentUser.value!!.username!! else "")) }
     var usernameError by remember { mutableStateOf(false) }
 
+    val animatedVisibleState = remember { MutableTransitionState(false) }
+        .apply { targetState = true }
+
     Column {
         Row {
-            IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(0.dp, 0.dp, 60.dp, 0.dp)
-                    .wrapContentHeight(),
-                text = "Shopping Card",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
+            AnimatedVisibility(
+                visibleState = animatedVisibleState,
+                enter = slideInVertically(
+                    animationSpec = tween(500),
+                    initialOffsetY = { -40 }
+                ) + fadeIn(
+                    animationSpec = tween(500)
+                ),
+                exit = fadeOut()
             )
+            {
+                IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .padding(0.dp, 0.dp, 60.dp, 0.dp)
+                        .wrapContentHeight(),
+                    text = "Shopping Card",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
         LazyColumn(Modifier.padding(20.dp, 0.dp)) {
             item {
-                OutlinedTextField(
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = firstName,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next),
-                    onValueChange = {
-                        firstName = it
-                        firstNameError = false
-                    },
-                    label = { Text(text = "First Name") },
-                    trailingIcon = {
-                        if (firstNameError)
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
-                    }
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 500),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 500)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = firstName,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next),
+                        onValueChange = {
+                            firstName = it
+                            firstNameError = false
+                        },
+                        label = { Text(text = "First Name") },
+                        trailingIcon = {
+                            if (firstNameError)
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                        }
+                    )
+                }
                 if (firstNameError) {
                     Text(text = "Please enter your first name", color = Color.Red, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = lastName,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next),
-                    onValueChange = {
-                        lastName = it
-                        lastNameError = false
-                    },
-                    label = { Text(text = "Last Name") },
-                    trailingIcon = {
-                        if (lastNameError)
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
-                    }
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 700),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 700)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = lastName,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next),
+                        onValueChange = {
+                            lastName = it
+                            lastNameError = false
+                        },
+                        label = { Text(text = "Last Name") },
+                        trailingIcon = {
+                            if (lastNameError)
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                        }
+                    )
+                }
                 if (lastNameError) {
                     Text(text = "Please enter your last name", color = Color.Red, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = username,
-                    enabled = currentUser.value == null,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next),
-                    onValueChange = {
-                        username = it
-                        usernameError = false
-                    },
-                    label = { Text(text = "Username") },
-                    trailingIcon = {
-                        if (usernameError) {
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
-                        }
-                    }
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 900),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 900)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = username,
+                        enabled = currentUser.value == null,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next),
+                        onValueChange = {
+                            username = it
+                            usernameError = false
+                        },
+                        label = { Text(text = "Username") },
+                        trailingIcon = {
+                            if (usernameError) {
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                            }
+                        }
+                    )
+                }
                 if (usernameError) {
                     Text(text = "Please enter your username", color = Color.Red, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = phone,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Next),
-                    onValueChange = {
-                        phone = it
-                        phoneError = false
-                    },
-                    label = { Text(text = "Phone") },
-                    trailingIcon = {
-                        if (phoneError) {
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
-                        }
-                    }
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 1100),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 1100)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    OutlinedTextField(
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = phone,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next),
+                        onValueChange = {
+                            phone = it
+                            phoneError = false
+                        },
+                        label = { Text(text = "Phone") },
+                        trailingIcon = {
+                            if (phoneError) {
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                            }
+                        }
+                    )
+                }
                 if (phoneError) {
                     Text(text = "Please enter your phone", color = Color.Red, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    singleLine = false,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = postalCode,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next),
-                    onValueChange = {
-                        postalCode = it
-                        postalCodeError = false
-                    },
-                    label = { Text(text = "Postal Code") },
-                    trailingIcon = {
-                        if (postalCodeError) {
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
-                        }
-                    }
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 1300),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 1300)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    OutlinedTextField(
+                        singleLine = false,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = postalCode,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next),
+                        onValueChange = {
+                            postalCode = it
+                            postalCodeError = false
+                        },
+                        label = { Text(text = "Postal Code") },
+                        trailingIcon = {
+                            if (postalCodeError) {
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                            }
+                        }
+                    )
+                }
                 if (postalCodeError) {
                     Text(text = "Please enter your postal code",
                         color = Color.Red,
@@ -192,90 +273,115 @@ fun EditProfileScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                OutlinedTextField(
-                    singleLine = false,
-                    modifier = Modifier.fillMaxWidth(),
-                    value = address,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    onValueChange = {
-                        address = it
-                        addressError = false
-                    },
-                    label = { Text(text = "Address") },
-                    trailingIcon = {
-                        if (addressError) {
-                            Icon(imageVector = Icons.Filled.Warning,
-                                contentDescription = "error",
-                                tint = Color.Red)
-                        }
-                    }
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 1500),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 1500)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    OutlinedTextField(
+                        singleLine = false,
+                        modifier = Modifier.fillMaxWidth(),
+                        value = address,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        onValueChange = {
+                            address = it
+                            addressError = false
+                        },
+                        label = { Text(text = "Address") },
+                        trailingIcon = {
+                            if (addressError) {
+                                Icon(imageVector = Icons.Filled.Warning,
+                                    contentDescription = "error",
+                                    tint = Color.Red)
+                            }
+                        }
+                    )
+                }
                 if (addressError) {
                     Text(text = "Please enter your address", color = Color.Red, fontSize = 12.sp)
                 }
                 Spacer(modifier = Modifier.height(40.dp))
 
                 if (!isLoading) {
-                    Button(
-                        onClick = {
-                            if (firstName.text.isEmpty())
-                                firstNameError = true
-                            if (lastName.text.isEmpty())
-                                lastNameError = true
-                            if (username.text.isEmpty())
-                                usernameError = true
-                            if (phone.text.isEmpty())
-                                phoneError = true
-                            if (postalCode.text.isEmpty())
-                                postalCodeError = true
-                            if (address.text.isEmpty())
-                                addressError = true
-                            if (firstNameError || lastNameError || usernameError || phoneError || postalCodeError || addressError)
-                                return@Button
-                            val userInfo = UserVM(
-                                id = currentUser.value!!.id,
-                                customerId = currentUser.value!!.customerId,
-                                username = username.text,
-                                firstName = firstName.text,
-                                lastName = lastName.text,
-                                phone = phone.text,
-                                address = address.text,
-                                postalCode = postalCode.text,
-                            )
-                            userInfo.token = currentUser.value!!.token!!
-                            isLoading = true
-                            userViewModel.update(userInfo) { response ->
-                                if (response.status == "OK") {
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        val userEntity = userInfo.convertToUserEntity()
-                                        userEntity.id = currentUser.value!!.id
-                                        userEntity.token = currentUser.value!!.token!!
-                                        userEntityViewModel.update(userEntity)
+
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 1800),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 1800)
+                        ),
+                        exit = fadeOut()
+                    )
+                    {
+                        Button(
+                            onClick = {
+                                if (firstName.text.isEmpty())
+                                    firstNameError = true
+                                if (lastName.text.isEmpty())
+                                    lastNameError = true
+                                if (username.text.isEmpty())
+                                    usernameError = true
+                                if (phone.text.isEmpty())
+                                    phoneError = true
+                                if (postalCode.text.isEmpty())
+                                    postalCodeError = true
+                                if (address.text.isEmpty())
+                                    addressError = true
+                                if (firstNameError || lastNameError || usernameError || phoneError || postalCodeError || addressError)
+                                    return@Button
+                                val userInfo = UserVM(
+                                    id = currentUser.value!!.id,
+                                    customerId = currentUser.value!!.customerId,
+                                    username = username.text,
+                                    firstName = firstName.text,
+                                    lastName = lastName.text,
+                                    phone = phone.text,
+                                    address = address.text,
+                                    postalCode = postalCode.text,
+                                )
+                                userInfo.token = currentUser.value!!.token!!
+                                isLoading = true
+                                userViewModel.update(userInfo) { response ->
+                                    if (response.status == "OK") {
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            val userEntity = userInfo.convertToUserEntity()
+                                            userEntity.id = currentUser.value!!.id
+                                            userEntity.token = currentUser.value!!.token!!
+                                            userEntityViewModel.update(userEntity)
+                                        }
+                                        isLoading = false
+                                        navController.popBackStack()
                                     }
-                                    isLoading = false
-                                    navController.popBackStack()
                                 }
-                            }
-                        },
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp, 0.dp)
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.DarkGray
-                        )
-                    ) {
-                        Text(
+                            },
+                            shape = RoundedCornerShape(10.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .align(Alignment.CenterVertically),
-                            text = "Update Profile",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.5.sp,
-                            color = Color.White,
-                            textAlign = TextAlign.Center,
-                        )
+                                .padding(20.dp, 0.dp)
+                                .height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.DarkGray
+                            )
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterVertically),
+                                text = "Update Profile",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.5.sp,
+                                color = Color.White,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 }
                 if (isLoading) {

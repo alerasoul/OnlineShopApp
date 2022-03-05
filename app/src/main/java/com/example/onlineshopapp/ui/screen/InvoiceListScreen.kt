@@ -1,5 +1,11 @@
 package com.example.onlineshopapp.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
@@ -28,21 +34,36 @@ fun InvoiceListScreen(
     val dataList by remember { mutableStateOf(viewModel.dataList) }
     val isLoading by remember { mutableStateOf(viewModel.isLoading) }
 
+    val animatedVisibleState = remember { MutableTransitionState(false) }
+        .apply { targetState = true }
+
     Column {
-        Row(Modifier.padding(20.dp)) {
-            IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
+        AnimatedVisibility(
+            visibleState = animatedVisibleState,
+            enter = slideInVertically(
+                animationSpec = tween(500),
+                initialOffsetY = { -40 }
+            ) + fadeIn(
+                animationSpec = tween(500)
+            ),
+            exit = fadeOut()
+        )
+        {
+            Row(Modifier.padding(20.dp)) {
+                IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
+                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 6.dp, 60.dp, 0.dp),
+                    text = "Invoices",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 23.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                )
             }
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp, 6.dp, 60.dp, 0.dp),
-                text = "Invoices",
-                fontWeight = FontWeight.Bold,
-                fontSize = 23.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-            )
         }
         LazyColumn(
             modifier = Modifier.padding(20.dp, 0.dp)
@@ -53,13 +74,25 @@ fun InvoiceListScreen(
                         .fillMaxSize())
                 }
             } else {
-                items(dataList.value.size) { index ->
-                    viewModel.onScrollPositionChange(index)
-                    if ((index + 1) >= (viewModel.pageIndex.value * viewModel.pageSize) && !viewModel.isLoading.value) {
-                        viewModel.nextPage()
+                    items(dataList.value.size) { index ->
+                        viewModel.onScrollPositionChange(index)
+                        if ((index + 1) >= (viewModel.pageIndex.value * viewModel.pageSize) && !viewModel.isLoading.value) {
+                            viewModel.nextPage()
+                        }
+                        AnimatedVisibility(
+                            visibleState = animatedVisibleState,
+                            enter = slideInVertically(
+                                animationSpec = tween(500, 500),
+                                initialOffsetY = { -40 }
+                            ) + fadeIn(
+                                animationSpec = tween(500, 500)
+                            ),
+                            exit = fadeOut()
+                        )
+                        {
+                        InvoiceListItemView(dataList.value[index], navController)
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
-                    InvoiceListItemView(dataList.value[index], navController)
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

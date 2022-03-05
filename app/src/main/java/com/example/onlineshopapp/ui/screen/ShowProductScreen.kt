@@ -1,6 +1,12 @@
 package com.example.onlineshopapp.ui.screen
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,9 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
-import com.example.onlineshopapp.MainActivity
 import com.example.onlineshopapp.db.model.BasketEntity
 import com.example.onlineshopapp.db.viewmodel.BasketEntityViewModel
 import com.example.onlineshopapp.ui.component.LoadingInColumn
@@ -42,10 +46,13 @@ fun ShowProductScreen(
     productViewModel: ProductViewModel = hiltViewModel(),
     basketViewModel: BasketEntityViewModel,
 ) {
-    var data by remember { mutableStateOf(productViewModel.data) }
+    val data by remember { mutableStateOf(productViewModel.data) }
     var isLoading by remember { mutableStateOf(true) }
     var selectedSize by remember { mutableStateOf(0) }
     var selectedColor by remember { mutableStateOf(0) }
+
+    val animatedVisibleState = remember { MutableTransitionState(false) }
+        .apply { targetState = true }
 
     val context = LocalContext.current
     productViewModel.getProductById(productId) { response ->
@@ -85,10 +92,22 @@ fun ShowProductScreen(
                     .fillMaxSize(),
                 contentAlignment = Alignment.TopStart
             ) {
-                IconButton(
-                    onClick = { navController.popBackStack() }
-                ) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500)
+                    ),
+                    exit = fadeOut()
+                )
+                {
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
+                    }
                 }
             }
             Box(
@@ -109,106 +128,193 @@ fun ShowProductScreen(
                     .padding(20.dp),
                 contentAlignment = Alignment.BottomStart
             ) {
-                Column() {
-
-                    Text(
-                        text = data.value!!.title!!,
-                        color = Color.White,
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Bold
+                Column {
+                    androidx.compose.animation.AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 500),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 500)
+                        ),
+                        exit = fadeOut()
                     )
+                    {
+                        Text(
+                            text = data.value!!.title!!,
+                            color = Color.White,
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "${data.value!!.price}T",
-                        color = Color.White,
-                        fontSize = 20.sp
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 800),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 800)
+                        ),
+                        exit = fadeOut()
                     )
+                    {
+                        Text(
+                            text = "${data.value!!.price}T",
+                            color = Color.White,
+                            fontSize = 20.sp
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "Sizes",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 1300),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 1300)
+                        ),
+                        exit = fadeOut()
                     )
+                    {
+                        Text(
+                            text = "Sizes",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    LazyRow {
-                        items(data.value!!.size!!.size) { index ->
-                            TextButton(
-                                modifier = Modifier.size(35.dp),
-                                onClick = { selectedSize = index },
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = if (selectedSize == index) Color.White else Color.Transparent
-                                )
-                            ) {
-                                Text(
-                                    text = data.value!!.size!![index].title!!,
-                                    fontWeight = FontWeight.Bold,
-                                    color = if (selectedSize == index) Color.Black else Color.White
-                                )
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 1500),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 1500)
+                        ),
+                        exit = fadeOut()
+                    )
+                    {
+                        LazyRow {
+                            items(data.value!!.size!!.size) { index ->
+                                TextButton(
+                                    modifier = Modifier.size(35.dp),
+                                    onClick = { selectedSize = index },
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor = if (selectedSize == index) Color.White else Color.Transparent
+                                    )
+                                ) {
+                                    Text(
+                                        text = data.value!!.size!![index].title!!,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (selectedSize == index) Color.Black else Color.White
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(5.dp))
                             }
-                            Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = "Colors",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 2000),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 2000)
+                        ),
+                        exit = fadeOut()
                     )
+                    {
+                        Text(
+                            text = "Colors",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    LazyRow {
-                        items(data.value!!.colors!!.size) { index ->
-                            TextButton(
-                                modifier = Modifier.size(35.dp),
-                                onClick = { selectedColor = index },
-                                shape = RoundedCornerShape(50.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor =
-                                    Color(android.graphics.Color.parseColor("#${data.value!!.colors!![index].hexValue}"))
-                                ),
-                                border = BorderStroke(1.dp, Color.White)
-                            ) {
-                                if (index == selectedColor)
-                                    Icon(imageVector = Icons.Filled.Check,
-                                        contentDescription = "",
-                                        tint = if (data.value!!.colors!![index].hexValue!!.lowercase(
-                                                Locale.getDefault()) == "000000"
-                                        ) Color.White else Color.Black)
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 2300),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 2300)
+                        ),
+                        exit = fadeOut()
+                    )
+                    {
+                        LazyRow {
+                            items(data.value!!.colors!!.size) { index ->
+                                TextButton(
+                                    modifier = Modifier.size(35.dp),
+                                    onClick = { selectedColor = index },
+                                    shape = RoundedCornerShape(50.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        backgroundColor =
+                                        Color(android.graphics.Color.parseColor("#${data.value!!.colors!![index].hexValue}"))
+                                    ),
+                                    border = BorderStroke(1.dp, Color.White)
+                                ) {
+                                    if (index == selectedColor)
+                                        Icon(imageVector = Icons.Filled.Check,
+                                            contentDescription = "",
+                                            tint = if (data.value!!.colors!![index].hexValue!!.lowercase(
+                                                    Locale.getDefault()) == "000000"
+                                            ) Color.White else Color.Black)
+                                }
+                                Spacer(modifier = Modifier.width(5.dp))
                             }
-                            Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
                     Spacer(modifier = Modifier.height(40.dp))
-                    Button(
-                        onClick = {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                val basket =
-                                    BasketEntity(
-                                        productId = productId,
-                                        quantity = 1,
-                                        sizeId = data.value!!.size!![selectedSize].id!!,
-                                        colorId = data.value!!.colors!![selectedColor].id!!,
-                                        image = data.value!!.image!!,
-                                        price = data.value!!.price!!.toLong(),
-                                        title = data.value!!.title!!,
-                                        hexColor = data.value!!.colors!![selectedColor].hexValue!!,
-                                        sizeTitle = data.value!!.size!![selectedSize].title!!
-                                    )
-                                basketViewModel.addToBasket(basket)
-                            }
-                            Toast.makeText(context, "Product added to basket", Toast.LENGTH_SHORT)
-                                .show()
-                            navController.popBackStack()
-                        },
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp),
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-                    ) {
-                        Text(text = "Buy Now", fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 2800),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 2800)
+                        ),
+                        exit = fadeOut()
+                    )
+                    {
+                        Button(
+                            onClick = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val basket =
+                                        BasketEntity(
+                                            productId = productId,
+                                            quantity = 1,
+                                            sizeId = data.value!!.size!![selectedSize].id!!,
+                                            colorId = data.value!!.colors!![selectedColor].id!!,
+                                            image = data.value!!.image!!,
+                                            price = data.value!!.price!!.toLong(),
+                                            title = data.value!!.title!!,
+                                            hexColor = data.value!!.colors!![selectedColor].hexValue!!,
+                                            sizeTitle = data.value!!.size!![selectedSize].title!!
+                                        )
+                                    basketViewModel.addToBasket(basket)
+                                }
+                                Toast.makeText(context,
+                                    "Product added to basket",
+                                    Toast.LENGTH_SHORT)
+                                    .show()
+                                navController.popBackStack()
+                            },
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(40.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+                        ) {
+                            Text(text = "Buy Now",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 17.sp)
+                        }
                     }
                     Spacer(modifier = Modifier.height(50.dp))
                 }

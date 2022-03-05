@@ -1,5 +1,11 @@
 package com.example.onlineshopapp.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -37,25 +43,40 @@ fun InvoiceScreen(
     val data by remember { mutableStateOf(viewModel.data) }
     val isLoading by remember { mutableStateOf(viewModel.isLoading) }
 
+    val animatedVisibleState = remember { MutableTransitionState(false) }
+        .apply { targetState = true }
+
     if (isLoading.value || data.value == null) {
         LoadingInColumn(modifier = Modifier
             .fillMaxSize())
     } else {
         Column {
             Row(Modifier.padding(20.dp)) {
-                IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
-                }
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 6.dp, 60.dp, 0.dp),
-                    text = "Invoice",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 23.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500)
+                    ),
+                    exit = fadeOut()
                 )
+                {
+                    IconButton(onClick = { navController.popBackStack() }, Modifier.width(60.dp)) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "")
+                    }
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp, 6.dp, 60.dp, 0.dp),
+                        text = "Invoice",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 23.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
             Column(
                 Modifier
@@ -64,6 +85,17 @@ fun InvoiceScreen(
                     .padding(30.dp),
                 horizontalAlignment = CenterHorizontally
             ) {
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 500),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 500)
+                    ),
+                    exit = fadeOut()
+                )
+                {
                 Card(modifier = Modifier
                     .width(200.dp)
                     .height(200.dp)
@@ -71,24 +103,61 @@ fun InvoiceScreen(
                     .align(CenterHorizontally),
                     shape = RoundedCornerShape(20.dp),
                     backgroundColor = if (data.value!!.status == "NotPayed") LightRed else LightGreen) {
-                    Icon(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                        imageVector = if (data.value!!.status == "NotPayed") Icons.Filled.Close else Icons.Filled.Check,
-                        tint = Color.White,
-                        contentDescription = "")
+                        Icon(modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                            imageVector = if (data.value!!.status == "NotPayed") Icons.Filled.Close else Icons.Filled.Check,
+                            tint = Color.White,
+                            contentDescription = "")
+                    }
                 }
             }
             Column(Modifier
                 .fillMaxSize()
                 .padding(20.dp)) {
                 Spacer(modifier = Modifier.height(40.dp))
-                Text(text = "Status: ${data.value!!.status!!}", fontSize = 22.sp)
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 1000),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 1000)
+                    ),
+                    exit = fadeOut()
+                )
+                {
+                    Text(text = "Status: ${data.value!!.status!!}", fontSize = 22.sp)
+                }
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "Add date: ${data.value!!.addDate!!}", fontSize = 22.sp)
+                AnimatedVisibility(
+                    visibleState = animatedVisibleState,
+                    enter = slideInVertically(
+                        animationSpec = tween(500, 1500),
+                        initialOffsetY = { -40 }
+                    ) + fadeIn(
+                        animationSpec = tween(500, 1500)
+                    ),
+                    exit = fadeOut()
+                )
+                {
+                    Text(text = "Add date: ${data.value!!.addDate!!}", fontSize = 22.sp)
+                }
                 if (!data.value!!.paymentDate!!.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = "Payment date: ${data.value!!.paymentDate!!}", fontSize = 22.sp)
+                    AnimatedVisibility(
+                        visibleState = animatedVisibleState,
+                        enter = slideInVertically(
+                            animationSpec = tween(500, 2000),
+                            initialOffsetY = { -40 }
+                        ) + fadeIn(
+                            animationSpec = tween(500, 2000)
+                        ),
+                        exit = fadeOut()
+                    )
+                    {
+                        Text(text = "Payment date: ${data.value!!.paymentDate!!}", fontSize = 22.sp)
+                    }
                 }
             }
         }
